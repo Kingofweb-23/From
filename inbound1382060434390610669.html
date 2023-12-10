@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classico Italiano Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff5733;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #ff5733;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ff6e40;
+        }
+
+        #orderDetails {
+            margin-top: 20px;
+        }
+
+        #selectedItems {
+            background-color: #d9d9d9;
+            border: 1px solid #b0b0b0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #selectedItems li {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Classico Italiano</h1>
+    </header>
+
+    <div class="container">
+        <h2>Restaurant Information</h2>
+        <p><strong>Name:</strong> Classico Italiano</p>
+        <p><strong>Location:</strong> Via Angelo Tavanti 23, Firenze, Italy</p>
+        <p><strong>Categories:</strong> Italian, Pizzeria, Vegetarian, Organic</p>
+
+        <h2>Menu</h2>
+        <h3>Starter Menu:</h3>
+        <ul id="starterMenu">
+            <!-- Dynamically filled with JavaScript -->
+        </ul>
+
+        <h3>Main Menu:</h3>
+        <ul id="mainMenu">
+            <!-- Dynamically filled with JavaScript -->
+        </ul>
+
+        <h2>Opening Hours</h2>
+        <p><strong>Thursday:</strong> 12:00 PM - 10:00 PM</p>
+        <p><strong>Friday:</strong> 11:00 AM - 11:00 PM</p>
+        <p><strong>Saturday:</strong> Open 24 hours</p>
+
+        <h2>Your Order</h2>
+        <div id="selectedItems">
+            <h3>Selected Items</h3>
+            <ul id="orderItems"></ul>
+            <p><strong>Total:</strong> <span id="orderTotal">0</span></p>
+        </div>
+
+        <h2>Place an Order</h2>
+        <button onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <script>
+        const restaurant = {
+            name: 'Classico Italiano',
+            location: 'Via Angelo Tavanti 23, Firenze, Italy',
+            categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
+            starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
+            mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+            openingHours: {
+                thu: {
+                    open: '12:00 PM',
+                    close: '10:00 PM',
+                },
+                fri: {
+                    open: '11:00 AM',
+                    close: '11:00 PM',
+                },
+                sat: {
+                    open: 'Open 24 hours',
+                    close: 'Open 24 hours',
+                },
+            },
+            order: function(starterIndex, mainIndex) {
+                return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+            },
+        };
+
+        // Dynamically populate starter and main menus
+        const starterMenuList = document.getElementById('starterMenu');
+        restaurant.starterMenu.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            li.onclick = () => selectItem('starter', index);
+            starterMenuList.appendChild(li);
+        });
+
+        const mainMenuList = document.getElementById('mainMenu');
+        restaurant.mainMenu.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            li.onclick = () => selectItem('main', index);
+            mainMenuList.appendChild(li);
+        });
+
+        const selectedItems = {
+            starter: [],
+            main: [],
+        };
+
+        const orderItems = document.getElementById('orderItems');
+        const orderTotal = document.getElementById('orderTotal');
+
+        function selectItem(menu, index) {
+            const item = restaurant[`${menu}Menu`][index];
+            if (!selectedItems[menu].includes(item)) {
+                selectedItems[menu].push(item);
+                const li = document.createElement('li');
+                li.textContent = item;
+                li.onclick = () => removeItem(menu, index);
+                orderItems.appendChild(li);
+                updateOrderTotal();
+            }
+        }
+
+        function removeItem(menu, index) {
+            const item = restaurant[`${menu}Menu`][index];
+            const itemIndex = selectedItems[menu].indexOf(item);
+            if (itemIndex !== -1) {
+                selectedItems[menu].splice(itemIndex, 1);
+                orderItems.removeChild(orderItems.children[itemIndex]);
+                updateOrderTotal();
+            }
+        }
+
+        function updateOrderTotal() {
+            const total = selectedItems.starter.length + selectedItems.main.length;
+            orderTotal.textContent = total;
+        }
+
+        function placeOrder() {
+            alert('Order placed! Thank you for your order.');
+            // You can add more logic here to send the order to a server or perform other actions.
+        }
+    </script>
+</body>
+</html>
